@@ -1,9 +1,13 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Icon from "@/components/ui/icon";
 
 const Index = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState(null);
+
   const categories = [
     { name: "Двигатель", icon: "Cog", color: "bg-blue-500" },
     { name: "Тормоза", icon: "CircleStop", color: "bg-red-500" },
@@ -70,7 +74,7 @@ const Index = () => {
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold mb-4">
+          <h2 className="text-5xl font-bold mb-6 animate-fade-in">
             Автозапчасти для любого авто
           </h2>
           <p className="text-xl mb-8 text-blue-100">
@@ -82,12 +86,14 @@ const Index = () => {
               <div className="flex-1">
                 <Input
                   placeholder="Поиск по VIN, артикулу или названию..."
-                  className="h-12 text-lg bg-white text-gray-900"
+                  className="h-12 text-lg bg-white text-gray-900 border-0 shadow-lg"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
               <Button
                 size="lg"
-                className="bg-orange-500 hover:bg-orange-600 h-12 px-8"
+                className="bg-orange-500 hover:bg-orange-600 h-12 px-8 shadow-lg hover-scale"
               >
                 <Icon name="Search" size={20} />
                 Найти
@@ -110,11 +116,16 @@ const Index = () => {
             {categories.map((category, index) => (
               <Card
                 key={index}
-                className="hover:shadow-lg transition-shadow cursor-pointer group"
+                className={`hover:shadow-xl transition-all duration-300 cursor-pointer group hover-scale ${
+                  selectedCategory === index ? "ring-2 ring-blue-500" : ""
+                }`}
+                onClick={() =>
+                  setSelectedCategory(selectedCategory === index ? null : index)
+                }
               >
                 <CardContent className="p-6 text-center">
                   <div
-                    className={`${category.color} w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform`}
+                    className={`${category.color} w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300`}
                   >
                     <Icon
                       name={category.icon}
@@ -122,7 +133,7 @@ const Index = () => {
                       className="text-white"
                     />
                   </div>
-                  <h4 className="font-semibold text-gray-900">
+                  <h4 className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
                     {category.name}
                   </h4>
                 </CardContent>
@@ -149,17 +160,23 @@ const Index = () => {
             {popularProducts.map((product, index) => (
               <Card
                 key={index}
-                className="hover:shadow-lg transition-shadow group cursor-pointer"
+                className="hover:shadow-xl transition-all duration-300 group cursor-pointer hover-scale animate-fade-in"
+                style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <div className="aspect-video overflow-hidden rounded-t-lg">
+                <div className="aspect-video overflow-hidden rounded-t-lg relative">
                   <img
                     src={product.image}
                     alt={product.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
+                  {product.oldPrice && (
+                    <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded text-sm font-bold">
+                      СКИДКА
+                    </div>
+                  )}
                 </div>
                 <CardContent className="p-4">
-                  <h4 className="font-semibold text-gray-900 mb-2 line-clamp-2">
+                  <h4 className="font-semibold text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
                     {product.name}
                   </h4>
                   <div className="flex items-center justify-between">
@@ -175,7 +192,7 @@ const Index = () => {
                     </div>
                     <Button
                       size="sm"
-                      className="bg-orange-500 hover:bg-orange-600"
+                      className="bg-orange-500 hover:bg-orange-600 hover-scale"
                     >
                       <Icon name="ShoppingCart" size={16} />
                     </Button>
